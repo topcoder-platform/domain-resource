@@ -1,0 +1,35 @@
+{
+  "name": "new-folder",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build:proto:client:nosql": "node bin/nosql-client",
+    "build:proto:client:rdb": "node bin/rdb-client",
+    "build:proto:server": "node bin/server",
+    "build:proto:client": "npm run build:proto:client:nosql && npm run build:proto:client:rdb",
+    "build": "npm run build:proto:client && npm run build:proto:server && rimraf dist && tsc -b",
+    "start": "ts-node-dev --respawn --transpile-only src/server.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.183.0",
+    "@aws-sdk/util-dynamodb": "^3.183.0",
+    "@grpc/grpc-js": "^1.7.1",
+    "dotenv": "^16.0.3",
+    "grpc-server-reflection": "^0.1.5",
+    "lodash": "^4.17.21",
+    "source-map-support": "^0.5.21",
+    "uuidv4": "^6.2.13"
+  },
+  "volta": {
+    "node": "16.17.1",
+    "typescript": "4.8.4"
+  },
+  "devDependencies": {
+    "ts-node-dev": "^2.0.0",
+    "ts-proto": "^1.126.1"
+  }
+}
