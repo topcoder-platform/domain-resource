@@ -216,8 +216,8 @@ export interface SelectQuery {
   where: WhereCriteria[];
   groupBy: string[];
   orderBy: string[];
-  limit: number;
-  offset: number;
+  limit?: number | undefined;
+  offset?: number | undefined;
 }
 
 export interface ColumnValue {
@@ -638,7 +638,7 @@ export const WhereCriteria = {
 };
 
 function createBaseSelectQuery(): SelectQuery {
-  return { table: "", column: [], where: [], groupBy: [], orderBy: [], limit: 0, offset: 0 };
+  return { table: "", column: [], where: [], groupBy: [], orderBy: [], limit: undefined, offset: undefined };
 }
 
 export const SelectQuery = {
@@ -658,10 +658,10 @@ export const SelectQuery = {
     for (const v of message.orderBy) {
       writer.uint32(42).string(v!);
     }
-    if (message.limit !== 0) {
+    if (message.limit !== undefined) {
       writer.uint32(48).uint32(message.limit);
     }
-    if (message.offset !== 0) {
+    if (message.offset !== undefined) {
       writer.uint32(56).uint32(message.offset);
     }
     return writer;
@@ -710,8 +710,8 @@ export const SelectQuery = {
       where: Array.isArray(object?.where) ? object.where.map((e: any) => WhereCriteria.fromJSON(e)) : [],
       groupBy: Array.isArray(object?.groupBy) ? object.groupBy.map((e: any) => String(e)) : [],
       orderBy: Array.isArray(object?.orderBy) ? object.orderBy.map((e: any) => String(e)) : [],
-      limit: isSet(object.limit) ? Number(object.limit) : 0,
-      offset: isSet(object.offset) ? Number(object.offset) : 0,
+      limit: isSet(object.limit) ? Number(object.limit) : undefined,
+      offset: isSet(object.offset) ? Number(object.offset) : undefined,
     };
   },
 
@@ -750,8 +750,8 @@ export const SelectQuery = {
     message.where = object.where?.map((e) => WhereCriteria.fromPartial(e)) || [];
     message.groupBy = object.groupBy?.map((e) => e) || [];
     message.orderBy = object.orderBy?.map((e) => e) || [];
-    message.limit = object.limit ?? 0;
-    message.offset = object.offset ?? 0;
+    message.limit = object.limit ?? undefined;
+    message.offset = object.offset ?? undefined;
     return message;
   },
 };

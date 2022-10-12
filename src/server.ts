@@ -16,6 +16,10 @@ import {
   ResourceRolePhaseDependencyServer,
   ResourceRolePhaseDependencyService,
 } from "./service/ResourceRolePhaseDependencyService";
+import {
+  LegacyChallengeServer,
+  LegacyChallengeService,
+} from "./service/LegacyChallengeService";
 
 const { GRPC_SERVER_HOST = "", GRPC_SERVER_PORT = 9091 } = process.env;
 
@@ -32,6 +36,8 @@ server.addService(
   ResourceRolePhaseDependencyService,
   new ResourceRolePhaseDependencyServer()
 );
+
+server.addService(LegacyChallengeService, new LegacyChallengeServer());
 
 server.bindAsync(
   `${GRPC_SERVER_HOST}:${GRPC_SERVER_PORT}`,

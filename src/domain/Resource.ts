@@ -5,15 +5,21 @@ import { CreateResourceInput, Resource } from "../models/resource/Resource";
 import { ResourceSchema } from "../schema/Resource";
 
 import CoreOperations from "./CoreOperations";
+import LegacyResourceACL from "../acl/LegacyResourceACL";
 
 class ResourceDomain extends CoreOperations<Resource> {
   protected toEntity(item: { [key: string]: Value }): Resource {
     return Resource.fromJSON(item);
   }
 
-  public create(payload: CreateResourceInput): Promise<Resource> {
+  public async create(payload: CreateResourceInput): Promise<Resource> {
     const id = IdGenerator.generateUUID();
-    const legacyId = 1234567;
+
+    // -- Begin Anti-Corruption Layer
+
+    const legacyId = await LegacyResourceACL.create(payload);
+
+    // -- End Anti-Corruption Layer
 
     const created = new Date().getTime();
     const updated = created;

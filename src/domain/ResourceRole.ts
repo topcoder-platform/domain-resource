@@ -6,8 +6,6 @@ import { ResourceRoleSchema } from "../schema/ResourceRole";
 import {
   CreateResourceRoleInput,
   ResourceRole,
-  ResourceRoleList,
-  UpdateResourceRoleInput,
   UpdateResourceRoleInput_Payload,
 } from "../models/resource/ResourceRole";
 import { ResourceList } from "../models/resource/Resource";
