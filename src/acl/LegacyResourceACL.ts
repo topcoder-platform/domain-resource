@@ -7,6 +7,7 @@ import LegacyResourceInfoDomain from "../domain/legacy/LegacyResourceInfo";
 
 import { CreateResourceInput } from "../models/resource/Resource";
 import dayjs from "dayjs";
+import ChallengePayment from "../domain/ChallengePayment";
 
 const RESOURCE_TYPE_EXT_REF_ID = 1;
 const RESOURCE_TYPE_HANDLE_ID = 2;
@@ -20,7 +21,7 @@ class LegacyResourceACL {
   public async create(payload: CreateResourceInput) {
     // Get legacy challenge id
 
-    const { challengeId, roleId } = payload;
+    const { challengeId, roleId, paymentAmount } = payload;
 
     const challenge = await Challenge.lookup({
       key: "id",
@@ -94,6 +95,16 @@ class LegacyResourceACL {
         legacyResourceId,
         key,
         value.toString()
+      );
+    }
+
+    // Create payment if payment amount is provided
+
+    if (paymentAmount) {
+      await LegacyResourceInfoDomain.addResourceInfo(
+        legacyResourceId,
+        RESOURCE_TYPE_MANUAL_PAYMENTS,
+        "true"
       );
     }
 

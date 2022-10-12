@@ -216,8 +216,8 @@ export interface SelectQuery {
   where: WhereCriteria[];
   groupBy: string[];
   orderBy: string[];
-  limit?: number | undefined;
-  offset?: number | undefined;
+  limit: number;
+  offset: number;
 }
 
 export interface ColumnValue {
@@ -230,6 +230,7 @@ export interface InsertQuery {
   columnValue: ColumnValue[];
   idColumn?: string | undefined;
   idSequence?: string | undefined;
+  idTable?: string | undefined;
 }
 
 export interface UpdateQuery {
@@ -638,7 +639,7 @@ export const WhereCriteria = {
 };
 
 function createBaseSelectQuery(): SelectQuery {
-  return { table: "", column: [], where: [], groupBy: [], orderBy: [], limit: undefined, offset: undefined };
+  return { table: "", column: [], where: [], groupBy: [], orderBy: [], limit: 0, offset: 0 };
 }
 
 export const SelectQuery = {
@@ -658,10 +659,10 @@ export const SelectQuery = {
     for (const v of message.orderBy) {
       writer.uint32(42).string(v!);
     }
-    if (message.limit !== undefined) {
+    if (message.limit !== 0) {
       writer.uint32(48).uint32(message.limit);
     }
-    if (message.offset !== undefined) {
+    if (message.offset !== 0) {
       writer.uint32(56).uint32(message.offset);
     }
     return writer;
@@ -710,8 +711,8 @@ export const SelectQuery = {
       where: Array.isArray(object?.where) ? object.where.map((e: any) => WhereCriteria.fromJSON(e)) : [],
       groupBy: Array.isArray(object?.groupBy) ? object.groupBy.map((e: any) => String(e)) : [],
       orderBy: Array.isArray(object?.orderBy) ? object.orderBy.map((e: any) => String(e)) : [],
-      limit: isSet(object.limit) ? Number(object.limit) : undefined,
-      offset: isSet(object.offset) ? Number(object.offset) : undefined,
+      limit: isSet(object.limit) ? Number(object.limit) : 0,
+      offset: isSet(object.offset) ? Number(object.offset) : 0,
     };
   },
 
@@ -750,8 +751,8 @@ export const SelectQuery = {
     message.where = object.where?.map((e) => WhereCriteria.fromPartial(e)) || [];
     message.groupBy = object.groupBy?.map((e) => e) || [];
     message.orderBy = object.orderBy?.map((e) => e) || [];
-    message.limit = object.limit ?? undefined;
-    message.offset = object.offset ?? undefined;
+    message.limit = object.limit ?? 0;
+    message.offset = object.offset ?? 0;
     return message;
   },
 };
@@ -815,7 +816,7 @@ export const ColumnValue = {
 };
 
 function createBaseInsertQuery(): InsertQuery {
-  return { table: "", columnValue: [], idColumn: undefined, idSequence: undefined };
+  return { table: "", columnValue: [], idColumn: undefined, idSequence: undefined, idTable: undefined };
 }
 
 export const InsertQuery = {
@@ -831,6 +832,9 @@ export const InsertQuery = {
     }
     if (message.idSequence !== undefined) {
       writer.uint32(34).string(message.idSequence);
+    }
+    if (message.idTable !== undefined) {
+      writer.uint32(42).string(message.idTable);
     }
     return writer;
   },
@@ -854,6 +858,9 @@ export const InsertQuery = {
         case 4:
           message.idSequence = reader.string();
           break;
+        case 5:
+          message.idTable = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -870,6 +877,7 @@ export const InsertQuery = {
         : [],
       idColumn: isSet(object.idColumn) ? String(object.idColumn) : undefined,
       idSequence: isSet(object.idSequence) ? String(object.idSequence) : undefined,
+      idTable: isSet(object.idTable) ? String(object.idTable) : undefined,
     };
   },
 
@@ -883,6 +891,7 @@ export const InsertQuery = {
     }
     message.idColumn !== undefined && (obj.idColumn = message.idColumn);
     message.idSequence !== undefined && (obj.idSequence = message.idSequence);
+    message.idTable !== undefined && (obj.idTable = message.idTable);
     return obj;
   },
 
@@ -892,6 +901,7 @@ export const InsertQuery = {
     message.columnValue = object.columnValue?.map((e) => ColumnValue.fromPartial(e)) || [];
     message.idColumn = object.idColumn ?? undefined;
     message.idSequence = object.idSequence ?? undefined;
+    message.idTable = object.idTable ?? undefined;
     return message;
   },
 };

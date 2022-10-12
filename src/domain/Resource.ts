@@ -6,6 +6,9 @@ import { ResourceSchema } from "../schema/Resource";
 
 import CoreOperations from "./CoreOperations";
 import LegacyResourceACL from "../acl/LegacyResourceACL";
+import ChallengePayment from "./ChallengePayment";
+
+const LEGACY_REVIEWER_CHALLENGE_PAYMENT_TYPE = 3;
 
 class ResourceDomain extends CoreOperations<Resource> {
   protected toEntity(item: { [key: string]: Value }): Resource {
@@ -20,6 +23,14 @@ class ResourceDomain extends CoreOperations<Resource> {
     const legacyId = await LegacyResourceACL.create(payload);
 
     // -- End Anti-Corruption Layer
+
+    if (payload.paymentAmount) {
+      await ChallengePayment.createPayment(
+        legacyId,
+        payload.paymentAmount,
+        LEGACY_REVIEWER_CHALLENGE_PAYMENT_TYPE
+      );
+    }
 
     const created = new Date().getTime();
     const updated = created;
